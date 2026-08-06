@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class SecurityController extends Controller
+{
+    public function index()
+    {
+        return view('security');
+    }
+
+   public function verify(Request $request)
+{
+    $request->validate([
+        'capability_code' => 'required',
+    ]);
+
+    $user = Auth::user();
+
+    if (!Hash::check($request->capability_code, $user->capability_code)) {
+
+        return back()->with('error', 'Invalid Capability Code.');
+
+    }
+
+    return redirect()->route('dashboard')
+        ->with('success', 'Capability verified successfully.');
+}
+}
