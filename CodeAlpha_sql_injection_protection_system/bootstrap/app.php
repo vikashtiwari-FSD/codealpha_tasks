@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->web(append: [
         \App\Http\Middleware\SqlInjectionMiddleware::class,
     ]);
+    $middleware->alias([
+    'capability' => \App\Http\Middleware\CapabilityMiddleware::class,
+    ]);
 
 })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -26,6 +26,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/security/verify', [SecurityController::class, 'verify'])
         ->name('security.verify');
 
+    Route::get('/security/dashboard', [SecurityController::class, 'dashboard'])
+    ->middleware('capability')
+    ->name('security.dashboard');
+
 });
 
 require __DIR__.'/auth.php';

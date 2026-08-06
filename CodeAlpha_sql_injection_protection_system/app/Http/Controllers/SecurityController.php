@@ -27,7 +27,16 @@ class SecurityController extends Controller
 
     }
 
-    return redirect()->route('dashboard')
-        ->with('success', 'Capability verified successfully.');
+    session([
+    'capability_verified' => true
+]);
+
+    return redirect()->route('security.dashboard')
+    ->with('success', 'Capability verified successfully.');
+}
+
+public function dashboard()
+{
+    return view('security-dashboard');
 }
 }

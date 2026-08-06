@@ -13,8 +13,16 @@ class CapabilityMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        return $next($request);
+    public function handle($request, Closure $next)
+{
+    if (!session('capability_verified')) {
+
+        return redirect()
+            ->route('security')
+            ->with('error', 'Please verify your Capability Code.');
+
     }
+
+    return $next($request);
+}
 }
