@@ -16,8 +16,13 @@ class SecurityController extends Controller
    public function verify(Request $request)
 {
     $request->validate([
-        'capability_code' => 'required',
-    ]);
+    'capability_code' => [
+        'required',
+        'string',
+        'min:6',
+        'max:20',
+    ],
+]);
 
     $user = Auth::user();
 

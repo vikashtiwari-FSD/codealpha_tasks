@@ -13,13 +13,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware(['auth'])->group(function () {
-
+    // Security
     Route::get('/security', [SecurityController::class, 'index'])
         ->name('security');
 
@@ -27,8 +27,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('security.verify');
 
     Route::get('/security/dashboard', [SecurityController::class, 'dashboard'])
-    ->middleware('capability')
-    ->name('security.dashboard');
+        ->middleware('capability')
+        ->name('security.dashboard');
 
 });
 
