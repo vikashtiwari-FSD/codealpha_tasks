@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Services\EncryptionService;
 
 class RegisteredUserController extends Controller
 {
@@ -31,20 +32,52 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+    'name' => ['required', 'string', 'max:255'],
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    'email' => [
+        'required',
+        'string',
+        'lowercase',
+        'email',
+        'max:255',
+        'unique:' . User::class,
+    ],
 
-        event(new Registered($user));
+    'phone' => [
+        'required',
+        'digits_between:10,15',
+    ],
 
-        Auth::login($user);
+    'capability_code' => [
+        'required',
+        'min:6',
+        'max:20',
+    ],
+
+    'password' => [
+        'required',
+        'confirmed',
+        Rules\Password::defaults(),
+    ],
+]);
+
+$encryptionService = new EncryptionService();
+
+$user = User::create([
+    'name' => $request->name,
+
+    'email' => $request->email,
+
+    'phone' => $encryptionService->encrypt($request->phone),
+
+    'capability_code' => Hash::make($request->capability_code),
+
+    'password' => Hash::make($request->password),
+]);
+
+event(new Registered($user));
+
+Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
     }
