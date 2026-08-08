@@ -12,11 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
+    $middleware->trustProxies(at: '*');
+
     $middleware->web(append: [
         \App\Http\Middleware\SqlInjectionMiddleware::class,
     ]);
+
     $middleware->alias([
-    'capability' => \App\Http\Middleware\CapabilityMiddleware::class,
+        'capability' => \App\Http\Middleware\CapabilityMiddleware::class,
     ]);
 
 })
